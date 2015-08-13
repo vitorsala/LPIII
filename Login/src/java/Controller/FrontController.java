@@ -1,26 +1,25 @@
-package Controller;
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package Controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
  * @author vitorkawai
  */
-@WebServlet(urlPatterns = {"/FrontController"})
 public class FrontController extends HttpServlet {
-    private String login;
+ private String username;
     private String password;
     private String command;
 
@@ -37,7 +36,28 @@ public class FrontController extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         
-        
+        if(command.startsWith("login")){
+            
+            // Login
+            if(command.endsWith("login")){
+                if(LoginManager.authorize(username, password)){
+                    RequestDispatcher rd = request.getRequestDispatcher("/home.jsp");
+                   
+                    HttpSession session = request.getSession();
+                    session.setAttribute("username", username);
+                    
+                    rd.forward(request, response);
+                }
+                else{
+                    RequestDispatcher rd = request.getRequestDispatcher("/error.jsp");
+                    rd.forward(request, response);
+                }
+            }
+            // Logout
+            else{
+                
+            }
+        }
         
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
@@ -48,8 +68,7 @@ public class FrontController extends HttpServlet {
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet LoginServlet at " + request.getContextPath() + "</h1>");
-            out.println("<p>Login: " + login + " - Senha: "+ password +" </p>");
-            
+            out.println("<p>Login: " + username + " - Senha: "+ password +" </p>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -81,7 +100,7 @@ public class FrontController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        login = request.getParameter("login");
+        username = request.getParameter("login");
         password = request.getParameter("password");
         command = request.getParameter("command");
         
@@ -97,5 +116,4 @@ public class FrontController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }
