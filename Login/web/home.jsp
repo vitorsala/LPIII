@@ -13,6 +13,6 @@
     </head>
     <body>
         <h1>Hello World!</h1>
-        <p><c:out value="${'username'}"></p>
+        <p><c:out value="${username}"></p>
     </body>
 </html>
